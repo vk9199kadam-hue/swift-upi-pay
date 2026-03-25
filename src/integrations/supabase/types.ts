@@ -25,6 +25,7 @@ export type Database = {
           status: string
           upi_id: string
           verified_at: string | null
+          utr_number: string | null
         }
         Insert: {
           amount: number
@@ -36,6 +37,7 @@ export type Database = {
           status?: string
           upi_id: string
           verified_at?: string | null
+          utr_number?: string | null
         }
         Update: {
           amount?: number
@@ -47,6 +49,7 @@ export type Database = {
           status?: string
           upi_id?: string
           verified_at?: string | null
+          utr_number?: string | null
         }
         Relationships: []
       }

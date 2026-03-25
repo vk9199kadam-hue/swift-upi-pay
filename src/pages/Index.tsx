@@ -1,7 +1,9 @@
 import { useState } from "react";
 import PaymentForm from "@/components/PaymentForm";
 import QRDisplay from "@/components/QRDisplay";
-import { Shield, Zap, QrCode, LogOut } from "lucide-react";
+import { Shield, Zap, LogOut } from "lucide-react";
+import VkLogo from "@/components/VkLogo";
+
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -48,12 +50,16 @@ const Index = () => {
     setStep("qr");
   };
 
-  const handleVerify = async () => {
+  const handleVerify = async (utr: string) => {
     if (!paymentData?.paymentId) return;
 
     const { error } = await supabase
       .from("payments")
-      .update({ status: "paid", verified_at: new Date().toISOString() })
+      .update({ 
+        status: "paid", 
+        verified_at: new Date().toISOString(),
+        utr_number: utr 
+      })
       .eq("id", paymentData.paymentId);
 
     if (error) {
@@ -76,10 +82,11 @@ const Index = () => {
       <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
-              <QrCode className="h-5 w-5 text-primary-foreground" />
+            <div className="h-9 w-9 rounded-lg flex items-center justify-center">
+              <VkLogo className="h-9 w-9" />
             </div>
-            <span className="font-bold text-lg tracking-tight">UPI Pay</span>
+            <span className="font-bold text-lg tracking-tight">VK Pay</span>
+
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground hidden sm:inline">{user?.email}</span>
@@ -107,7 +114,7 @@ const Index = () => {
           <div className="container px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto text-center">
               <div className="space-y-2">
-                <QrCode className="h-8 w-8 mx-auto text-primary" />
+                <VkLogo className="h-8 w-8 mx-auto" />
                 <h3 className="font-semibold text-sm">Dynamic QR</h3>
                 <p className="text-xs text-muted-foreground">Unique QR for each order with amount pre-filled</p>
               </div>

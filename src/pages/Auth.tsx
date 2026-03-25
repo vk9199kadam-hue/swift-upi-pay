@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { QrCode, Shield, Mail, Lock, Loader2 } from "lucide-react";
+import { Shield, Mail, Lock, Loader2 } from "lucide-react";
+import VkLogo from "@/components/VkLogo";
+
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,10 +56,11 @@ const Auth = () => {
       <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="container flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
-              <QrCode className="h-5 w-5 text-primary-foreground" />
+            <div className="h-9 w-9 rounded-lg flex items-center justify-center">
+              <VkLogo className="h-9 w-9" />
             </div>
-            <span className="font-bold text-lg tracking-tight">UPI Pay</span>
+            <span className="font-bold text-lg tracking-tight">VK Pay</span>
+
           </div>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Shield className="h-3.5 w-3.5 text-success" />

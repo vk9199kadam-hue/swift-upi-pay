@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle2, IndianRupee, Smartphone } from "lucide-react";
+import { ArrowLeft, CheckCircle2, IndianRupee, Smartphone, Hash, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface QRDisplayProps {
   upiId: string;
@@ -10,12 +14,21 @@ interface QRDisplayProps {
   merchantName: string;
   orderId: string;
   status: "pending" | "paid";
-  onVerify: () => void;
+  onVerify: (utr: string) => void;
   onBack: () => void;
 }
 
 const QRDisplay = ({ upiId, amount, merchantName, orderId, status, onVerify, onBack }: QRDisplayProps) => {
+  const [utr, setUtr] = useState("");
   const upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(`Order ${orderId}`)}`;
+
+  const handleVerifyClick = () => {
+    if (utr.length !== 12) {
+      toast.error("Please enter a valid 12-digit UTR number");
+      return;
+    }
+    onVerify(utr);
+  };
 
   if (status === "paid") {
     return (
@@ -70,9 +83,16 @@ const QRDisplay = ({ upiId, amount, merchantName, orderId, status, onVerify, onB
             includeMargin
             bgColor="white"
             fgColor="hsl(220, 30%, 10%)"
+            imageSettings={{
+              src: "/vk-logo.svg",
+              x: undefined,
+              y: undefined,
+              height: 48,
+              width: 48,
+              excavate: true,
+            }}
           />
         </div>
-
         <div className="w-full space-y-3 px-2">
           <div className="flex items-center justify-center gap-2 text-3xl font-bold">
             <IndianRupee className="h-7 w-7" />
@@ -92,9 +112,29 @@ const QRDisplay = ({ upiId, amount, merchantName, orderId, status, onVerify, onB
           </div>
         </div>
 
-        <div className="w-full space-y-3">
-          <Button onClick={onVerify} className="w-full h-12 text-base font-semibold bg-success hover:bg-success/90">
-            <CheckCircle2 className="mr-2 h-5 w-5" /> I Have Paid — Verify Payment
+        <div className="w-full space-y-4 pt-4 border-t">
+          <div className="space-y-2">
+            <Label htmlFor="utr" className="flex items-center gap-2 text-sm font-semibold">
+              <Hash className="h-4 w-4 text-primary" /> Enter 12-digit Ref (UTR) Number
+            </Label>
+            <Input
+              id="utr"
+              placeholder="1234 5678 9012"
+              value={utr}
+              onChange={(e) => setUtr(e.target.value.replace(/\D/g, "").slice(0, 12))}
+              className="h-12 text-center text-lg tracking-[0.2em] font-mono"
+            />
+            <p className="text-[10px] text-muted-foreground text-center italic">
+              Find this 12-digit number in your payment app (GPay/PhonePe)
+            </p>
+          </div>
+
+          <Button 
+            onClick={handleVerifyClick} 
+            className="w-full h-12 text-base font-semibold bg-success hover:bg-success/90"
+            disabled={utr.length !== 12}
+          >
+            <CheckCircle2 className="mr-2 h-5 w-5" /> Submit & Verify Payment
           </Button>
           <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
             <Smartphone className="h-3 w-3" /> Open any UPI app and scan the QR code above
